@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mikucat <git@mikucat.me>
+Date: Sun, 6 Sep 2026 00:00:00 +0800
+Subject: [PATCH] disable DNS
+
+---
+ android/src/main/java/com/tailscale/ipn/VPNServiceBuilder.kt | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/android/src/main/java/com/tailscale/ipn/VPNServiceBuilder.kt b/android/src/main/java/com/tailscale/ipn/VPNServiceBuilder.kt
+index 30858d9..12d9e16 100644
+--- a/android/src/main/java/com/tailscale/ipn/VPNServiceBuilder.kt
++++ b/android/src/main/java/com/tailscale/ipn/VPNServiceBuilder.kt
+@@ -15,7 +15,6 @@ class VPNServiceBuilder(private val builder: VpnService.Builder) : libtailscale.
+   }
+ 
+   override fun addDNSServer(p0: String) {
+-    builder.addDnsServer(p0)
+   }
+ 
+   override fun addRoute(p0: String, p1: Int) {
+@@ -32,7 +31,6 @@ class VPNServiceBuilder(private val builder: VpnService.Builder) : libtailscale.
+   }
+ 
+   override fun addSearchDomain(p0: String) {
+-    builder.addSearchDomain(p0)
+   }
+ 
+   override fun establish(): ParcelFileDescriptor? {
+-- 
+2.55.0
+

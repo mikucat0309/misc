@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mikucat <git@mikucat.me>
+Date: Sun, 6 Sep 2026 00:00:00 +0800
+Subject: [PATCH] disable client logging
+
+---
+ android/src/main/java/com/tailscale/ipn/App.kt | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/android/src/main/java/com/tailscale/ipn/App.kt b/android/src/main/java/com/tailscale/ipn/App.kt
+index d6d559b..3cfd090 100644
+--- a/android/src/main/java/com/tailscale/ipn/App.kt
++++ b/android/src/main/java/com/tailscale/ipn/App.kt
+@@ -703,14 +703,7 @@ open class UninitializedApp : Application() {
+   }
+ 
+   fun getIsClientLoggingEnabled(): Boolean {
+-
+-    // Force client logging to be enabled, when the device is managed by MDM
+-    // Later this could become a dedicated MDMSetting / restriction.
+-    if (MDMSettings.isMDMConfigured) {
+-      return true
+-    }
+-
+-    return getUnencryptedPrefs().getBoolean(IS_CLIENT_LOGGING_ENABLED_KEY, true)
++    return false
+   }
+ 
+   fun updateIsClientLoggingEnabled(value: Boolean) {
+-- 
+2.55.0
+

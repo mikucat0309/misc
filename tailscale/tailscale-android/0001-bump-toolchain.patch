@@ -1,0 +1,16 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Nick O'Neill <nick@tailscale.com>
+Date: Wed, 19 Aug 2026 15:36:17 -0700
+Subject: [PATCH] manually bump toolchain rev to match 1.26.6
+
+---
+ go.toolchain.rev | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/go.toolchain.rev b/go.toolchain.rev
+index 4aaa98687e..a4171efe0a 100644
+--- a/go.toolchain.rev
++++ b/go.toolchain.rev
+@@ -1 +1 @@
+-63ae404c8203317fd3c82d972e5dc8f0fcb425cb
++7275f792d406d3c386cc807937a45a4a7b699d42

@@ -1,0 +1,38 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Mikucat <git@mikucat.me>
+Date: Sun, 6 Sep 2026 00:00:00 +0800
+Subject: [PATCH] optimize for arm64
+
+---
+ Makefile | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 7ac6c43..fb3f6a1 100644
+--- a/Makefile
++++ b/Makefile
+@@ -223,7 +223,7 @@ build-unstripped-aar: tailscale.version $(GOBIN)/gomobile
+ 	rm -f $(ABS_UNSTRIPPED_AAR)
+ 	# The -linkmode=external -extldflags=-Wl,-z,max-page-size=16384 is specific to NDK 23
+ 	# to support 16kb page sizes.  Your mileage may vary with other NDK versions.
+-	$(GOBIN)/gomobile bind -target android -androidapi 26 \
++	$(GOBIN)/gomobile bind -target android/arm64 -androidapi 26 \
+ 		-tags "$$(./build-tags.sh) $(GOMOBILE_BUILD_TAGS)" \
+ 		-ldflags "-linkmode=external -extldflags=-Wl,-z,max-page-size=16384 $$(./version-ldflags.sh)" \
+ 		-o $(ABS_UNSTRIPPED_AAR) ./libtailscale || { echo "gomobile bind failed"; exit 1; }
+@@ -351,9 +351,9 @@ checkandroidsdk: ## Check that Android SDK is installed
+ 		\tANDROID_SDK_ROOT=$(ANDROID_SDK_ROOT)\n\n\
+ 		See README.md for instructions on how to install the prerequisites.\n"; exit 1)
+ 
+-.PHONY: go-test                                                                                                                                                                                                 
+-  go-test: ## Run the Go tests (excludes packages requiring Android NDK)                                                                                                                                                                                     
+-	./tool/go test $$(./tool/go list ./... | grep -v '^github.com/tailscale/tailscale-android/libtailscale$$')    
++.PHONY: go-test
++  go-test: ## Run the Go tests (excludes packages requiring Android NDK)
++	./tool/go test $$(./tool/go list ./... | grep -v '^github.com/tailscale/tailscale-android/libtailscale$$')
+ 
+ .PHONY: test
+ test: gradle-dependencies ## Run the Android tests
+-- 
+2.55.0
+

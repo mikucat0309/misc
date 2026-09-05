@@ -39,14 +39,11 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
-      - name: Patch Makefile
-        run: sed -i 's|gomobile bind -target android|gomobile bind -target android/arm64|' Makefile
-
-      - name: Patch for Go 1.26.6
+      - name: Patch
         run: |
           git config --global user.name "Mikucat"
           git config --global user.email "git@mikucat.me"
-          curl -SsL https://github.com/tailscale/tailscale-android/commit/aea8f60c0a8b7b7d7d0695ff1f164f693f88b192.patch | git am
+          find tailscale/tailscale-android -name '*.patch' -exec cat {} | git am \;
 
       - name: Build libtailscale
         run: make libtailscale
