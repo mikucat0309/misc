@@ -43,7 +43,7 @@ jobs:
         run: |
           git config --global user.name "Mikucat"
           git config --global user.email "git@mikucat.me"
-          find tailscale/tailscale-android -name '*.patch' -exec cat {} | git am \;
+          find tailscale/tailscale-android -name '*.patch' -exec git am {} +
 
       - name: Build libtailscale
         run: make libtailscale
