@@ -6,6 +6,7 @@ on:
       - '**'
     tags:
       - 'tailscale/tailscale-android/**'
+  workflow_dispatch:
 
 permissions:
   contents: write
