@@ -85,3 +85,4 @@ jobs:
         with:
           name: Tailscale Android ${{ steps.meta.outputs.version }}
           files: tailscale-${{ steps.meta.outputs.version }}.apk
+          make_latest: "false"
