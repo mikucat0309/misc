@@ -1,0 +1,83 @@
+name: Tailscale Android
+
+on:
+  push:
+    branches-ignore:
+      - '**'
+    tags:
+      - 'tailscale/tailscale-android/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup version
+        id: meta
+        run: |
+          tag="${{ github.ref_name }}"
+          echo "version=${tag#tailscale/tailscale-android/}" >> $GITHUB_OUTPUT
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: tailscale/tailscale-android
+          ref: ${{ steps.meta.outputs.version }}
+
+      - name: Setup Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: "go.mod"
+
+      - name: Setup Java
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Patch Makefile
+        run: sed -i 's|gomobile bind -target android|gomobile bind -target android/arm64|' Makefile
+
+      - name: Patch for Go 1.26.6
+        run: |
+          git config --global user.name "Mikucat"
+          git config --global user.email "git@mikucat.me"
+          curl -SsL https://github.com/tailscale/tailscale-android/commit/aea8f60c0a8b7b7d7d0695ff1f164f693f88b192.patch | git am
+
+      - name: Build libtailscale
+        run: make libtailscale
+
+      - name: Build APK
+        working-directory: android
+        run: >
+          ./gradlew assembleRelease
+
+      - name: Align APK
+        run: >
+          zipalign
+          android/build/outputs/apk/release/android-release-unsigned.apk
+          aligned.apk
+
+      - name: Setup Keystore
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+        run: printf '%s' "$KEYSTORE" | base64 -d > release.jks
+
+      - name: Sign APK
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: >
+          apksigner sign
+          --ks release.jks
+          --ks-pass env:KEYSTORE_PASSWORD
+          --ks-key-alias key0
+          --out tailscale-${{ steps.meta.outputs.version }}.apk
+          aligned.apk
+
+      - name: Create new release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          name: Tailscale Android ${{ steps.meta.outputs.version }}
+          files: tailscale-${{ steps.meta.outputs.version }}.apk

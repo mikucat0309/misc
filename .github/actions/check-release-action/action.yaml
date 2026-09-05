@@ -1,0 +1,31 @@
+name: Check new releases
+description: Check new releases
+inputs:
+  repository:
+    description: GitHub repository
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Check & Update
+      shell: bash
+      env:
+        REPO: ${{ inputs.repository }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+          tag="$(gh api /repos/$REPO/releases/latest | jq -r '.tag_name')"
+          mkdir -p $REPO
+          echo "$tag" > $REPO/version
+          git add $REPO/version
+
+          if git diff --exit-code HEAD; then
+            echo "no new release"
+            exit 0
+          fi
+
+          echo "new release: $(cat $REPO/version)"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@users.noreply.github.com"
+          git commit -m "$REPO/$tag"
+          git tag "$REPO/$tag"
+          git push --tags origin main
