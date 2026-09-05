@@ -63,7 +63,7 @@ jobs:
 
       - name: Align APK
         run: >
-          zipalign
+          zipalign 4
           android/build/outputs/apk/release/android-release-unsigned.apk
           aligned.apk
 
