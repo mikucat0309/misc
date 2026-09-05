@@ -54,6 +54,11 @@ jobs:
         run: >
           ./gradlew assembleRelease
 
+      - name: Setup build-tools
+        run: |
+          version=$(ls -1 $ANDROID_HOME/build-tools/ | sort -V | tail -n 1)
+          echo "$ANDROID_HOME/build-tools/$version" >> $GITHUB_PATH
+
       - name: Align APK
         run: >
           zipalign
