@@ -27,5 +27,6 @@ runs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@users.noreply.github.com"
           git commit -m "$REPO/$tag"
-          git tag "$REPO/$tag"
-          git push --tags origin main
+          git tag "$REPO/$tag" --force
+          git push origin main
+          git push origin "$REPO/$tag" --force
