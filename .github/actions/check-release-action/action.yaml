@@ -1,5 +1,5 @@
-name: Check new releases
-description: Check new releases
+name: Check & Commit new releases
+description: Check & Commit new releases
 inputs:
   repository:
     description: GitHub repository
@@ -7,7 +7,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Check & Update
+    - name: Check & Commit
       shell: bash
       env:
         REPO: ${{ inputs.repository }}
@@ -24,9 +24,5 @@ runs:
           fi
 
           echo "new release: $(cat $REPO/version)"
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@users.noreply.github.com"
           git commit -m "$REPO: $tag"
           git tag "$REPO/$tag" --force
-          git push origin main
-          git push origin "$REPO/$tag" --force
