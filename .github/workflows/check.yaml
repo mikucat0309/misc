@@ -27,6 +27,11 @@ jobs:
         with:
           repository: tailscale/tailscale-android
 
+      - name: Check & Commit caddyserver/caddy
+        uses: ./.github/actions/check-release-action
+        with:
+          repository: caddyserver/caddy
+
       - name: Git push
         run: |
           git push origin main
