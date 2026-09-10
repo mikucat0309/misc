@@ -15,7 +15,7 @@ COPY <<EOF /etc/nut/ups.conf
   productid = 0601
 EOF
 
-COPY <<EOF /etc/nut/upsc.users
+COPY <<EOF /etc/nut/upsd.users
 [admin]
   password = password
   upsmon primary
