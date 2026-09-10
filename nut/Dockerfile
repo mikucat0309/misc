@@ -29,4 +29,5 @@ SHUTDOWNCMD "systemctl --private poweroff"
 EOF
 
 COPY --chmod=755 run.sh /run.sh
+ENV PATH="$PATH:/usr/lib/nut"
 CMD [ "/run.sh" ]
