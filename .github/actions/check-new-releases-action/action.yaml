@@ -1,0 +1,29 @@
+name: Check new releases
+description: Check new releases
+inputs:
+  repository:
+    description: GitHub repository
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: List tags
+      shell: bash
+      run: git tag -l --sort=-creatordate '${{ inputs.repository }}/*' | head -n 10
+
+    - name: Check new releases
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        upstream_tag="$(gh api /repos/${{ inputs.repository }}/releases/latest | jq -r '.tag_name')"
+        tag="${{ inputs.repository }}/$upstream_tag"
+        if git rev-parse -q --verify "$tag"; then
+          echo "no new release"
+          exit 0
+        fi
+
+        echo "new release: $upstream_tag"
+        first_commit=$(git rev-list --max-parents=0 HEAD)
+        git tag "$tag" $first_commit --force
+        git push origin "$tag" --force

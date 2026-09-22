@@ -1,0 +1,32 @@
+name: Setup version
+description: Setup version
+inputs:
+  repo:
+    description: repository
+    required: true
+  tag:
+    description: tag
+    required: true
+outputs:
+  tag:
+    description: tag
+    value: ${{ steps.setup.outputs.tag }}
+  version:
+    description: version
+    value: ${{ steps.setup.outputs.version }}
+runs:
+  using: composite
+  steps:
+    - name: Setup version
+      id: setup
+      shell: bash
+      run: |
+        tag="${{ inputs.tag }}"
+        if [[ $tag != ${{ inputs.repo }}/* ]]; then
+          echo "::error::Invalid tag: $tag"
+          exit 1
+        fi
+        cat << EOF >> $GITHUB_OUTPUT
+        tag=$tag
+        version=${tag#${{ inputs.repo }}/}
+        EOF
